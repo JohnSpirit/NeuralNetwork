@@ -58,21 +58,22 @@ public:
 
 	friend ostream& operator<<(ostream& o, const Matrix<T>& mat)
 	{
-		cout << mat.m << "*" << mat.n << endl;
+		cout << mat._m << "*" << mat._n << endl;
 		cout << "{" << endl;
-		for (int i = 0; i < mat.m; i++)
+		for (int i = 0; i < mat._m; i++)
 		{
 			cout << "\t{";
-			for (int j = 0; j < mat.n; j++)cout << "\t" << mat.matptr[i][j] << "\t";
+			for (int j = 0; j < mat._n; j++)cout << "\t" << mat._matptr[i][j] << "\t";
 			cout << "}" << endl;
 		}
 		cout << "}" << endl;
 		return o;
 	}
 
+	inline T** _getMatptr();
 
 protected:
-	int m;
-	int n;
-	T** matptr;
+	int _m;
+	int _n;
+	T** _matptr;
 };

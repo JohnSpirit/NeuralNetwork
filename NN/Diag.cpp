@@ -12,7 +12,7 @@ Diag<T>::Diag(T * arrptr, int n)
 	if (n < 1)return;
 	this->ReSize(n, n);
 	for (int i = 0; i < n; i++)
-		this->matptr[i][i] = arrptr[i];
+		this->_matptr[i][i] = arrptr[i];
 }
 
 template<typename T>
