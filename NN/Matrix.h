@@ -42,15 +42,17 @@ public:
 
 	Matrix<T>& Sigmoid();
 	Matrix<T>& SigmoidDerive();
+	Matrix<T>& Multi(double value);
 
 	Matrix<T>& operator=(const Matrix<T>& mat);
-	Matrix<T> operator[](int m)const;
+	Vector<T> operator[](int m)const;
 	Matrix<T> operator()(int m, int n)const;//get value
 	T& operator()(int m, int n);//set value
 	Matrix<T> operator+(const Matrix<T> mat)const;
 	Matrix<T> operator-()const;
 	Matrix<T> operator-(const Matrix<T> mat)const;
 	Matrix<T> operator*(const Matrix<T>& mat)const;
+	Matrix<T> operator*(double value)const;
 	Matrix<T> operator/(const Matrix<T>& mat)const;
 
 	template<typename ToType>

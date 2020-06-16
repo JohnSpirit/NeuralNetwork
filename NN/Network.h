@@ -12,6 +12,10 @@ public:
 	Network(Matrix<T1>& input, Matrix<T2>& exp_output, Vector<int>& node_config, double error_limit, float alpha);
 	~Network();
 
+	void Train();//训练
+	double ForwardCalc(int group_num);//前向计算
+	void BackPpg(int group_num);//反向传播
+
 private:
 	/*---- 输入数据 ----*/
 	double _error_limit = 0.1;//误差限
@@ -62,29 +66,32 @@ Network::Network(
 		然后程序会根据这些信息自动分配内存并初始化。
 	*/
 	this->_node_config = new Vector<int>(node_config);//复制节点信息
-	this->_layers = _node_config->GetLength();//获取层数（包含输入数据-第0层）
+	this->_layers = _node_config->GetLength();//获取层数（包含输入数据-第0层输出）
 
 	//给各层输入输出列向量分配内存
-	_input_vector = new Vector<double>[_layers];
-	_output_vector = new Vector<double>[_layers - 1];
-	for (int i = 0; i < _layers; i++)_input_vector[i].ReSize((*_node_config)[i], 1);
-	for (int i = 0; i < _layers - 1; i++)_output_vector[i].ReSize((*_node_config)[i], 1);
+	_input_vector = new Vector<double>[_layers - 1];
+	_output_vector = new Vector<double>[_layers];
+	for (int i = 0; i < _layers - 1; i++)_input_vector[i].ReSize((*_node_config)[i], 1);
+	for (int i = 0; i < _layers; i++)_output_vector[i].ReSize((*_node_config)[i] + 1, 1);
 
 	//给各层权重矩阵分配内存
 	_weight = new Matrix<double>[_layers - 1];
 	for (int i = 0; i < _layers - 1; i++)
 	{
-		_weight[i].ReSize(_node_config->operator[](i) + 1, _node_config->operator[](i + 1));
+		_weight[i].ReSize((*_node_config)[i] + 1, (*_node_config)[i + 1]);
 	}
 
 	//以下为反向传播中需要反复使用的矩阵，故也预先分配好内存。
 	//diag(f'x)矩阵：
 	_derive = new Diag<double>[_layers - 1];
 	for (int i = 0; i < _layers - 1; i++)
-		_derive[i].ReSize(_node_config->operator[](i + 1), _node_config->operator[](i + 1));
+		_derive[i].ReSize((*_node_config)[i + 1], (*_node_config)[i + 1]);
 	//delta矩阵
 	_delta = new Vector<double>[_layers - 1];
 	for (int i = 0; i < _layers - 1; i++)
-		_delta[i].ReSize(_node_config->operator[](i + 1), 1);
-
+		_delta[i].ReSize((*_node_config)[i + 1], 1);
+	//deltaweight矩阵
+	_deltaweight = new Matrix<double>[_layers - 1];
+	for (int i = 0; i < _layers - 1; i++)
+		_deltaweight[i].ReSize((*_node_config)[i] + 1, (*_node_config)[i + 1]);
 }

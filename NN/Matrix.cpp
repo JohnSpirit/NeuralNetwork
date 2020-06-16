@@ -236,6 +236,15 @@ Matrix<T>& Matrix<T>::SigmoidDerive()
 }
 
 template<typename T>
+Matrix<T>& Matrix<T>::Multi(double value)
+{
+	for (int i = 0; i < _m; i++)
+		for (int j = 0; j < _n; j++)
+			this->_matptr[i][j] *= value;
+	return *this;
+}
+
+template<typename T>
 Matrix<T>& Matrix<T>::operator=(const Matrix<T>& mat)
 {
 	if (this->_m != mat._m || this->_n != mat._n)
@@ -261,14 +270,14 @@ Matrix<T>& Matrix<T>::operator=(const Matrix<T>& mat)
 }
 
 template<typename T>
-Matrix<T> Matrix<T>::operator[](int m)const
+Vector<T> Matrix<T>::operator[](int m)const
 {
 	if (m < 0 || m >= this->_m)
 	{
 		cerr << "OutOfRangeError!" << endl;
 		exit(EXIT_FAILURE);
 	}
-	Matrix<T> mat(1, this->_n);
+	Vector<T> mat(1, this->_n);
 	for (int i = 0; i < this->_n; i++)mat._matptr[0][i] = this->_matptr[m][i];
 	return mat;
 }
@@ -355,6 +364,16 @@ Matrix<T> Matrix<T>::operator*(const Matrix<T>& mat) const
 		cerr << "An!=Bm,multiply function forbidden!" << endl;
 		exit(EXIT_FAILURE);
 	}
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::operator*(double value) const
+{
+	Matrix<T> mat(this->_m,this->_n);
+	for (int i = 0; i < _m; i++)
+		for (int j = 0; j < _n; j++)
+			mat._matptr[i][j] *= value;
+	return mat;
 }
 
 template<typename T>

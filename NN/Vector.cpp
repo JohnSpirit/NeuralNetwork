@@ -38,12 +38,12 @@ Vector<T>::Vector(T * arrptr, int n, bool transpose, bool append, T append_value
 }
 
 template<typename T>
-Vector<T>::Vector(Diag<T>& v)
+Vector<T>::Vector(const Diag<T>& v)
 {
 }
 
 template<typename T>
-Vector<T>::Vector(Matrix<T>& v)
+Vector<T>::Vector(const Matrix<T>& v)
 {
 }
 
@@ -72,7 +72,31 @@ T Vector<T>::operator[](int m)
 }
 
 template<typename T>
+Vector<T>& Vector<T>::operator=(const Vector<T> v)
+{
+	// TODO: 在此处插入 return 语句
+}
+
+template<typename T>
 inline int Vector<T>::GetLength()
 {
 	return this->_m >= this->_n ? this->_m : this->_n;
+}
+
+template<typename T>
+Vector<T>& Vector<T>::Sigmoid(bool ignore_end)
+{
+	if (_m > 1)
+		for (int i = 0; i < ignore_end ? this->_m - 1 : this->_m; i++)
+			this->_matptr[i][0] = 1 / (1 - exp(-this->_matptr[i][0]));
+	else if (_n > 1)
+		for (int i = 0; i < ignore_end ? this->_n - 1 : this->_n; i++)
+			this->_matptr[0][i] = 1 / (1 - exp(-this->_matptr[0][i]));
+	return *this;
+}
+
+template<typename T>
+T Vector<T>::Sum()
+{
+	return T();
 }
