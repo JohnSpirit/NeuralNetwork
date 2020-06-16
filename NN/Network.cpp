@@ -42,8 +42,18 @@ Network::Network(
 	*/
 	this->_node_config = new Vector<int>(node_config);
 	
-	this->_layers = _node_config->GetLength();
-
-
+	this->_layers = _node_config->GetLength();//获取层数（包含输入数据-第0层）
+	
+	_input_vector = new Vector<double>[_layers];
+	
+	_output_vector = new Vector<double>[_layers-1];
+	for (int i = 0; i < _layers; i++)
+	{
+		_input_vector[i].ReSize((*_node_config)[i], 1);
+	}
+	for (int i = 0; i < _layers-1; i++)
+	{
+		_output_vector[i].ReSize((*_node_config)[i], 1);
+	}
 
 }

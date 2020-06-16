@@ -52,11 +52,7 @@ Vector<T>::~Vector()
 {
 }
 
-template<typename T>
-inline int Vector<T>::GetLength()
-{
-	return this->m >= this->n ? this->m : this->n;
-}
+
 
 template<typename T>
 Diag<T> Vector<T>::ToDiag()

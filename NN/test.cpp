@@ -41,8 +41,10 @@ int main()
 	m(1, 2) = 6;
 	cout << m;
 	cout << m[1];
-	cout << m.GetSize();
-	getchar();
+	cout << m.GetSize().GetLength()<<endl;
+	
+	Vector<int>* c=new Vector<int>();
+	cout<<c->GetLength();
 
 	getchar();
 	return 0;

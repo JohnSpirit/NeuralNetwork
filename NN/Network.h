@@ -1,5 +1,7 @@
 #pragma once
 #include "Matrix.h"
+#include "Vector.h"
+#include "Diag.h"
 class Network
 {
 public:

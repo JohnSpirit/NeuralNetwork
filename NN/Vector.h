@@ -13,9 +13,14 @@ public:
 	Vector(Matrix<T>& v);
 	~Vector();
 
-	inline int GetLength();
+	int GetLength();
 
 	Diag<T> ToDiag();
 	T operator[](int m);
 };
 
+template<typename T>
+int Vector<T>::GetLength()
+{
+	return this->m >= this->n ? this->m : this->n;
+}

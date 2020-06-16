@@ -71,7 +71,7 @@ public:
 	}
 
 
-private:
+protected:
 	int m;
 	int n;
 	T** matptr;
