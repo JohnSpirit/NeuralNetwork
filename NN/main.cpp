@@ -1,13 +1,19 @@
 #include <iostream>
 #include "Matrix.h"
-//#include "Matrix.cpp"
 #include "Vector.h"
-//#include "Vector.cpp"
 #include "Diag.h"
-//#include "Diag.cpp"
 #include "Network.h"
 using namespace std;
 
+#define TEST
+
+#ifdef TEST
+int main(void)//≤‚ ‘ª˘¥°¿‡
+{
+	
+	return 0;
+}
+#else
 int main(void)
 {
 	int inputdat[70] = {
@@ -48,3 +54,4 @@ int main(void)
 
 	return 0;
 }
+#endif

@@ -2,11 +2,8 @@
 #include <cmath>
 #include <iostream>
 #include "Matrix.h"
-#include "Matrix.cpp"//模板类不支持分离编译
 #include "Vector.h"
-#include "Vector.cpp"
 #include "Diag.h"
-#include "Diag.cpp"
 #include "Network.h"
 using namespace std;
 

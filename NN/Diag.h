@@ -32,11 +32,17 @@ Diag<T>::Diag(T * arrptr, int n)
 template<typename T>
 Diag<T>::Diag(Vector<T>& v)
 {
+	this->ReSize(v.GetLength(), v.GetLength());
+	for (int i = 0; i < this->_m; i++)
+	{
+		this->_matptr[i][i] = v.operator[](i);
+	}
 }
 
 template<typename T>
 Diag<T>::Diag(Matrix<T>& mat)
 {
+
 }
 
 template<typename T>

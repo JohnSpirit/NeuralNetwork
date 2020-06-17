@@ -155,6 +155,8 @@ void Matrix<T>::ReSize(int new_m, int new_n)
 	if (_m == this->_m&&_n == this->_n)return;
 	for (int i = 0; i < this->_m; i++)delete[] this->_matptr[i];
 	delete[] this->_matptr;
+	this->_m = new_m;
+	this->_n = new_n;
 	this->_matptr = new T*[new_m];
 	for (int i = 0; i < new_m; i++)
 	{

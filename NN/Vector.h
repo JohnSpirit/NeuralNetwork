@@ -34,6 +34,7 @@ Vector<T>::Vector() :Matrix<T>()
 template<typename T>
 Vector<T>::Vector(int m, int n) :Matrix<T>(m, n)
 {
+
 }
 
 template<typename T>
@@ -80,7 +81,8 @@ Vector<T>::~Vector()
 template<typename T>
 Diag<T> Vector<T>::ToDiag()
 {
-	return Diag<T>();
+	Diag<T> d(*this);
+	return d;
 }
 
 template<typename T>
@@ -153,7 +155,25 @@ Vector<T> Vector<T>::SigmoidDerive()
 template<typename T>
 Vector<T> Vector<T>::Transpose(bool append, T value)
 {
-	return Vector<T>();
+	Vector<T> v(*this);
+	if (append)
+	{
+		this->ReSize(this->_n+1, this->_m);
+		for (int i = 0; i < this->_n; i++)
+			for (int j = 0; j < this->_m; j++)
+				this->_matptr[i][j] = v._matptr[j][i];
+		v._matptr[this->_n][0] = value;
+		return v;
+	}
+	else if (this->_m == this->_n)return v;
+	else
+	{
+		this->ReSize(this->_n, this->_m);
+		for (int i = 0; i < this->_n; i++)
+			for (int j = 0; j < this->_m; j++)
+				this->_matptr[i][j] = v._matptr[j][i];
+		return v;
+	}
 }
 
 template<typename T>
