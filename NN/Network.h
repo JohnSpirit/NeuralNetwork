@@ -14,7 +14,7 @@ public:
 
 	void Train();//训练
 	double ForwardCalc(int group_num);//前向计算
-	void BackPpg(int group_num);//反向传播
+	void BackPpg();//反向传播
 
 private:
 	/*---- 输入数据 ----*/

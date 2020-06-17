@@ -1,10 +1,10 @@
 #include <iostream>
 #include "Matrix.h"
-#include "Matrix.cpp"
+//#include "Matrix.cpp"
 #include "Vector.h"
-#include "Vector.cpp"
+//#include "Vector.cpp"
 #include "Diag.h"
-#include "Diag.cpp"
+//#include "Diag.cpp"
 #include "Network.h"
 using namespace std;
 
