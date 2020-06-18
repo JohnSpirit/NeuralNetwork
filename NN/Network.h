@@ -43,7 +43,7 @@ Network::Network(
 	double error_limit,
 	float alpha) :_error_limit(error_limit), _alpha(alpha)
 {
-	cout << "输入数据类型:" << typeid(&input).name() << endl
+	cout << "输入数据类型:" << typeid(input).name() << endl
 		<< "节点信息(输入个数与各层节点数):" << node_config << endl
 		<< "学习率" << alpha << endl
 		<< "误差限" << error_limit << endl;

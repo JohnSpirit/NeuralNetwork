@@ -14,10 +14,10 @@ public:
 	~Vector();
 
 	inline int GetLength();
-	Vector<T> Sigmoid(bool ignore_end = true);
+	Vector<T> Sigmoid();
 	Vector<T> SigmoidDerive();
-	Vector<T> Transpose(bool append = true, T value = 1);
-	//Vector<T> Multi(const Vector<T>& v);
+	Vector<T> Transpose(bool append = false, T value = 1);
+	Vector<T> Append(T value = 1);
 	T Sum();
 
 	Diag<T> ToDiag();
@@ -142,14 +142,14 @@ inline int Vector<T>::GetLength()
 }
 
 template<typename T>
-Vector<T> Vector<T>::Sigmoid(bool ignore_end)
+Vector<T> Vector<T>::Sigmoid()
 {
 	Vector<T> v(this->_m, this->_n);
 	if (this->_m > 1)
-		for (int i = 0; i < (ignore_end ? this->_m - 1 : this->_m); i++)
+		for (int i = 0; i < this->_m; i++)
 			v._matptr[i][0] = 1 / (1 - exp(-this->_matptr[i][0]));
 	else if (this->_n > 1)
-		for (int i = 0; i < (ignore_end ? this->_n - 1 : this->_n); i++)
+		for (int i = 0; i < this->_n; i++)
 			v._matptr[0][i] = 1 / (1 - exp(-this->_matptr[0][i]));
 	return v;
 }
@@ -167,22 +167,39 @@ Vector<T> Vector<T>::SigmoidDerive()
 template<typename T>
 Vector<T> Vector<T>::Transpose(bool append, T value)
 {
-	Vector<T> v(*this);
+	Vector<T> v(append ? this->_n + 1 : this->_n, this->_m);
 	if (append)
 	{
-		this->ReSize(this->_n + 1, this->_m);
-		for (int i = 0; i < v._m; i++)
-			for (int j = 0; j < v._n; j++)
-				this->_matptr[j][i] = v._matptr[i][j];
-		v._matptr[this->_n - 1][0] = value;
+		for (int i = 0; i < this->_m; i++)
+			for (int j = 0; j < this->_n; j++)
+				v._matptr[j][i] = this->_matptr[i][j];
+		v._matptr[this->_n][0] = value;
 		return v;
 	}
 	else
 	{
-		this->ReSize(this->_n, this->_m);
-		for (int i = 0; i < v._m; i++)
-			for (int j = 0; j < v._n; j++)
-				this->_matptr[j][i] = v._matptr[i][j];
+		for (int i = 0; i < this->_m; i++)
+			for (int j = 0; j < this->_n; j++)
+				v._matptr[j][i] = this->_matptr[i][j];
+		return v;
+	}
+}
+
+template<typename T>
+Vector<T> Vector<T>::Append(T value)
+{
+	if (this->_m > 1)
+	{
+		Vector<T> v(this->_m + 1, 1);
+		for (int i = 0; i < this->_m; i++)v._matptr[i][0] = this->_matptr[i][0];
+		v._matptr[this->_m][0] = value;
+		return v;
+	}
+	else
+	{
+		Vector<T> v(1, this->_n + 1);
+		for (int i = 0; i < this->_n; i++)v._matptr[0][i] = this->_matptr[0][i];
+		v._matptr[0][this->_n] = value;
 		return v;
 	}
 }

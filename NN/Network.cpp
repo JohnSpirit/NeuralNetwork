@@ -44,10 +44,10 @@ double Network::ForwardCalc(int group_num)
 	for (int layer = 0; layer < _layers - 1; layer++)
 	{
 		_input_vector[layer] = _weight[layer] * _output_vector[layer];
-		_output_vector[layer + 1] = _input_vector[layer].Sigmoid(true);
+		_output_vector[layer + 1] = _input_vector[layer].Sigmoid().Append();
 	}
 	//计算输出层误差
-	Vector<double> error(_exp_output[group_num].Transpose() -
+	Vector<double> error((*_exp_output)[group_num].Transpose() -
 		_output_vector[_layers - 1].Slice(0, 0, _output_vector[_layers - 1].GetLength() - 2, 0));
 	//计算最后一层的delta值
 	_delta[_layers - 2] = _input_vector[_layers - 2].SigmoidDerive().ToDiag()*
@@ -68,8 +68,8 @@ void Network::BackPpg()
 	for (int i = _layers - 3; i >= 0; i--)
 	{
 		_delta[i] = _derive[i] *
-			_weight[i].Slice(
-				0, 0, _weight[i].GetSize()[0] - 1, _weight[i].GetSize()[1] - 2
+			_weight[i + 1].Slice(
+				0, 0, _weight[i + 1].GetSize()[0] - 1, _weight[i + 1].GetSize()[1] - 2
 			).Transpose()*
 			_delta[i + 1];
 	}
@@ -79,5 +79,4 @@ void Network::BackPpg()
 		_deltaweight[i] = _delta[i] * (_output_vector[i].Transpose())*(-_alpha);
 		_weight[i] = _weight[i] + _deltaweight[i];
 	}
-
 }
