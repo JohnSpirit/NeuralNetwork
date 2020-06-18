@@ -17,7 +17,7 @@ public:
 	Vector<T> Sigmoid(bool ignore_end = true);
 	Vector<T> SigmoidDerive();
 	Vector<T> Transpose(bool append = true, T value = 1);
-	//Vector<T> Transpose()const;
+	//Vector<T> Multi(const Vector<T>& v);
 	T Sum();
 
 	Diag<T> ToDiag();
@@ -82,8 +82,7 @@ Vector<T>::~Vector()
 template<typename T>
 Diag<T> Vector<T>::ToDiag()
 {
-	Diag<T> d(*this);
-	return d;
+	return Diag<T>(*this);
 }
 
 template<typename T>
@@ -171,7 +170,7 @@ Vector<T> Vector<T>::Transpose(bool append, T value)
 	Vector<T> v(*this);
 	if (append)
 	{
-		this->ReSize(this->_n+1, this->_m);
+		this->ReSize(this->_n + 1, this->_m);
 		for (int i = 0; i < v._m; i++)
 			for (int j = 0; j < v._n; j++)
 				this->_matptr[j][i] = v._matptr[i][j];
@@ -187,13 +186,6 @@ Vector<T> Vector<T>::Transpose(bool append, T value)
 		return v;
 	}
 }
-
-//template<typename T>
-//Vector<T> Vector<T>::Transpose()const
-//{
-//	Vector<T> v(Matrix<T>::Transpose());
-//	return v;
-//}
 
 template<typename T>
 T Vector<T>::Sum()

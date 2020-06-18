@@ -42,7 +42,7 @@ public:
 
 	Matrix<T> Sigmoid();
 	Matrix<T> SigmoidDerive();
-	Matrix<T>& Multi(double value);
+	Matrix<T> Multi(const Matrix<T>& mat);//ÔªËØ¼òµ¥Ïà³Ë
 
 	Matrix<T>& operator=(const Matrix<T>& mat);
 	Vector<T> operator[](int m)const;
@@ -322,13 +322,23 @@ Matrix<T> Matrix<T>::SigmoidDerive()
 }
 
 template<typename T>
-Matrix<T>& Matrix<T>::Multi(double value)
+Matrix<T> Matrix<T>::Multi(const Matrix<T>& mat)
 {
-	for (int i = 0; i < this->_m; i++)
-		for (int j = 0; j < this->_n; j++)
-			this->_matptr[i][j] *= value;
-	return *this;
+	Matrix<T> m(*this);
+	if (mat._m == this->_m&&mat._n == this->_n)
+	{
+		for (int i = 0; i < this->_m; i++)
+			for (int j = 0; j < this->_n; j++)
+				m._matptr[i][j] += mat._matptr[i][j];
+		return m;
+	}
+	else
+	{
+		cerr << "DifferentSizeError!" << endl;
+		exit(EXIT_FAILURE);
+	}
 }
+
 
 template<typename T>
 Matrix<T>& Matrix<T>::operator=(const Matrix<T>& mat)
