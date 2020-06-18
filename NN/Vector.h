@@ -147,10 +147,10 @@ Vector<T> Vector<T>::Sigmoid()
 	Vector<T> v(this->_m, this->_n);
 	if (this->_m > 1)
 		for (int i = 0; i < this->_m; i++)
-			v._matptr[i][0] = 1 / (1 - exp(-this->_matptr[i][0]));
+			v._matptr[i][0] = 1 / (1 + exp(-this->_matptr[i][0]));
 	else if (this->_n > 1)
 		for (int i = 0; i < this->_n; i++)
-			v._matptr[0][i] = 1 / (1 - exp(-this->_matptr[0][i]));
+			v._matptr[0][i] = 1 / (1 + exp(-this->_matptr[0][i]));
 	return v;
 }
 
@@ -160,7 +160,7 @@ Vector<T> Vector<T>::SigmoidDerive()
 	Vector<T> mat(this->_m, this->_n);
 	for (int i = 0; i < this->_m; i++)
 		for (int j = 0; j < this->_n; j++)
-			mat._matptr[i][j] = -exp(-this->_matptr[i][j]) / pow(1 - exp(-this->_matptr[i][j]), 2);
+			mat._matptr[i][j] = exp(-this->_matptr[i][j]) / pow(1 + exp(-this->_matptr[i][j]), 2);
 	return mat;
 }
 

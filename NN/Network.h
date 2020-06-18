@@ -15,6 +15,7 @@ public:
 	void Train();//训练
 	double ForwardCalc(int group_num);//前向计算
 	void BackPpg();//反向传播
+	void ShowResult();//显示运行结果
 
 private:
 	/*---- 输入数据 ----*/
@@ -71,6 +72,7 @@ Network::Network(
 	{
 		_weight[i].ReSize((*_node_config)[i + 1], (*_node_config)[i] + 1);
 		cout << "第" << i << "层矩阵大小=" << (*_node_config)[i + 1] << "*" << (*_node_config)[i] + 1 << endl;
+		_weight[i].Randomize();//随机化
 	}
 
 	//以下为反向传播中需要反复使用的矩阵，故也预先分配好内存。

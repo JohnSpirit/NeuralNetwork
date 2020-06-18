@@ -2,6 +2,7 @@
 //2020.6 Copyright@JSY-2020.
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
 using namespace std;
 
 template<typename T>
@@ -19,6 +20,8 @@ constexpr int COL = 1;
 constexpr int ROW = 2;
 constexpr int ALL = 0;
 
+double random_numbers[];
+
 template<typename T>
 class Matrix
 {
@@ -29,6 +32,7 @@ public:
 	virtual ~Matrix();
 
 	Matrix<T>& SetValueByArray(T* arrptr = nullptr, int RowOrCol = COL, int toset = 0);
+	Matrix<T>& Randomize();
 
 	void ReSize(int m, int n);
 	Vector<int> GetSize()const;
@@ -147,6 +151,15 @@ Matrix<T>& Matrix<T>::SetValueByArray(T * arrptr, int RowOrCol, int toset)
 			for (int j = 0; j < this->_n; j++)
 				this->_matptr[i][j] = arrptr[this->_n*i + j];
 	}
+	return *this;
+}
+
+template<typename T>
+Matrix<T>& Matrix<T>::Randomize()
+{
+	for (int i = 0; i < this->_m; i++)
+		for (int j = 0; j < this->_n; j++)
+			this->_matptr[i][j] = random_numbers[rand() % 4096];
 	return *this;
 }
 
@@ -307,7 +320,7 @@ Matrix<T> Matrix<T>::Sigmoid()
 	Matrix<T> mat(this->_m, this->_n);
 	for (int i = 0; i < this->_m; i++)
 		for (int j = 0; j < this->_n; j++)
-			mat._matptr[i][j] = 1 / (1 - exp(-this->_matptr[i][j]));
+			mat._matptr[i][j] = 1 / (1 + exp(-this->_matptr[i][j]));
 	return mat;
 }
 
@@ -317,7 +330,7 @@ Matrix<T> Matrix<T>::SigmoidDerive()
 	Matrix<T> mat(this->_m, this->_n);
 	for (int i = 0; i < this->_m; i++)
 		for (int j = 0; j < this->_n; j++)
-			mat._matptr[i][j] = -exp(-this->_matptr[i][j]) / pow(1 - exp(-this->_matptr[i][j]), 2);
+			mat._matptr[i][j] = exp(-this->_matptr[i][j]) / pow(1 + exp(-this->_matptr[i][j]), 2);
 	return mat;
 }
 
@@ -329,7 +342,7 @@ Matrix<T> Matrix<T>::Multi(const Matrix<T>& mat)
 	{
 		for (int i = 0; i < this->_m; i++)
 			for (int j = 0; j < this->_n; j++)
-				m._matptr[i][j] += mat._matptr[i][j];
+				m._matptr[i][j] *= mat._matptr[i][j];
 		return m;
 	}
 	else

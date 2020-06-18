@@ -25,15 +25,20 @@ void Network::Train()
 	//对于每一组输入数据，进行前向计算，返回原始误差。
 	for (int count = 0;; count++)
 	{
+		avr_e = 0.0;
 		cout << count << "\t";
 		for (int i = 0; i < _input->GetSize()[0]; i++)
 		{
-			avr_e += ForwardCalc(i);
+			double e = ForwardCalc(i);
+			avr_e += e;
 			BackPpg();
 		}
 		avr_e /= _input->GetSize()[0];
 		cout << "error=" << avr_e << endl;
-		if (avr_e < _error_limit)break;
+		if (abs(avr_e) < _error_limit) {
+			ShowResult();
+			break;
+		}
 	}
 }
 
@@ -76,7 +81,22 @@ void Network::BackPpg()
 	//生成各层deltaweight矩阵，并将deltaweight矩阵与weight矩阵相加以实现权重更新
 	for (int i = _layers - 2; i >= 0; i--)
 	{
-		_deltaweight[i] = _delta[i] * (_output_vector[i].Transpose())*(-_alpha);
+		_deltaweight[i] = _delta[i] * (_output_vector[i].Transpose())*(_alpha);
 		_weight[i] = _weight[i] + _deltaweight[i];
 	}
+}
+
+void Network::ShowResult()
+{
+	double avr_e = 0.0;
+	for (int i = 0; i < _input->GetSize()[0]; i++)
+	{
+		double e= ForwardCalc(i);
+		cout << "本输入对应平方和误差=" << e << endl;
+		avr_e += e;
+		cout << "输入\n" << (*_input)[i] << endl;
+		cout << "期望输出\n" << (*_exp_output)[i] << endl;
+		cout << "实际输出\n" << _output_vector[_layers - 1].Slice(0, 0, _output_vector[_layers - 1].GetLength() - 2, 0).Transpose()<<endl;
+	}
+	cout << "平均平方和误差=" << avr_e / _input->GetSize()[0]<<endl;
 }
