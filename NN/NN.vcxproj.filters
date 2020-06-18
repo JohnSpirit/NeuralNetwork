@@ -38,9 +38,6 @@
     <ClInclude Include="Diag.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MatrixView.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Network.h">
       <Filter>头文件</Filter>
     </ClInclude>

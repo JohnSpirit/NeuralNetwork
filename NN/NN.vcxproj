@@ -129,7 +129,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Matrix.h" />
-    <ClInclude Include="MatrixView.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
