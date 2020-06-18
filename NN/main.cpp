@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 #include "Matrix.h"
 #include "Vector.h"
 #include "Diag.h"
@@ -83,7 +84,7 @@ int main(void)
 		2,3,3,2
 	};
 	
-	srand(163);
+	srand(time(0)+clock());
 
 	Matrix<int> inputmat(4, 2), outputmat(4, 2);
 	Vector<int> nodeconfig(nodecfg, 4, false, false);
