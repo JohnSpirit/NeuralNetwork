@@ -44,9 +44,9 @@ public:
 	Matrix<T> Slice(int m1 = ALL, int n1 = ALL, int m2 = ALL, int n2 = ALL)const;
 	MatrixView<T> SliceView(int m1 = ALL, int n1 = ALL, int m2 = ALL, int n2 = ALL)const;
 
-	Matrix<T> Sigmoid();
-	Matrix<T> SigmoidDerive();
-	Matrix<T> Multi(const Matrix<T>& mat);//元素简单相乘
+	Matrix<T> Sigmoid()const;
+	Matrix<T> SigmoidDerive()const;
+	Matrix<T> Multi(const Matrix<T>& mat)const;//元素简单相乘
 
 	Matrix<T>& operator=(const Matrix<T>& mat);
 	Vector<T> operator[](int m)const;
@@ -60,7 +60,7 @@ public:
 	Matrix<T> operator/(const Matrix<T>& mat)const;
 
 	template<typename ToType>
-	Matrix<ToType> TypeCast();
+	Matrix<ToType> TypeCast()const;
 
 	friend ostream& operator<<(ostream& o, const Matrix<T>& mat)
 	{
@@ -69,14 +69,14 @@ public:
 		for (int i = 0; i < mat._m; i++)
 		{
 			cout << "\t{";
-			for (int j = 0; j < mat._n; j++)cout << "\t" << mat._matptr[i][j] << "\t";
+			for (int j = 0; j < mat._n; j++)cout << "  " << mat._matptr[i][j] << "\t";
 			cout << "}" << endl;
 		}
 		cout << "}" << endl;
 		return o;
 	}
 
-	inline T** _getMatptr();
+	inline T** _getMatptr()const;
 
 protected:
 	int _m;
@@ -159,7 +159,7 @@ Matrix<T>& Matrix<T>::Randomize()
 {
 	for (int i = 0; i < this->_m; i++)
 		for (int j = 0; j < this->_n; j++)
-			this->_matptr[i][j] = random_numbers[rand() % 4096];
+			this->_matptr[i][j] = random_numbers[rand() % 4096]/10000000;
 	return *this;
 }
 
@@ -315,7 +315,7 @@ MatrixView<T> Matrix<T>::SliceView(int m1, int n1, int m2, int n2) const
 }
 
 template<typename T>
-Matrix<T> Matrix<T>::Sigmoid()
+Matrix<T> Matrix<T>::Sigmoid()const
 {
 	Matrix<T> mat(this->_m, this->_n);
 	for (int i = 0; i < this->_m; i++)
@@ -325,7 +325,7 @@ Matrix<T> Matrix<T>::Sigmoid()
 }
 
 template<typename T>
-Matrix<T> Matrix<T>::SigmoidDerive()
+Matrix<T> Matrix<T>::SigmoidDerive()const
 {
 	Matrix<T> mat(this->_m, this->_n);
 	for (int i = 0; i < this->_m; i++)
@@ -335,7 +335,7 @@ Matrix<T> Matrix<T>::SigmoidDerive()
 }
 
 template<typename T>
-Matrix<T> Matrix<T>::Multi(const Matrix<T>& mat)
+Matrix<T> Matrix<T>::Multi(const Matrix<T>& mat)const
 {
 	Matrix<T> m(*this);
 	if (mat._m == this->_m&&mat._n == this->_n)
@@ -492,14 +492,14 @@ Matrix<T> Matrix<T>::operator/(const Matrix<T>& mat) const
 }
 
 template<typename T>
-inline T ** Matrix<T>::_getMatptr()
+inline T ** Matrix<T>::_getMatptr()const
 {
 	return this->_matptr;
 }
 
 template<typename T>
 template<typename ToType>
-Matrix<ToType> Matrix<T>::TypeCast()
+Matrix<ToType> Matrix<T>::TypeCast()const
 {
 	Matrix<ToType> mat(this->_m, this->_n);
 	for (int i = 0; i < this->_m; i++)

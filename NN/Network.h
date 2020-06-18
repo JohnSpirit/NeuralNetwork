@@ -2,20 +2,21 @@
 #include "Matrix.h"
 #include "Vector.h"
 #include "Diag.h"
-#include "MatrixView.h"
 class Network
 {
 public:
 
 	Network();
 	template<typename T1, typename T2>
-	Network(Matrix<T1>& input, Matrix<T2>& exp_output, Vector<int>& node_config, double error_limit, float alpha);
+	Network(const Matrix<T1>& input, const Matrix<T2>& exp_output,const Vector<int>& node_config, double error_limit, float alpha);
 	~Network();
 
 	void Train();//训练
 	double ForwardCalc(int group_num);//前向计算
 	void BackPpg();//反向传播
 	void ShowResult();//显示运行结果
+	template<typename T1, typename T2>
+	void Test(const Matrix<T1>& test_input, const Matrix<T2>& exp_output);//测试
 
 private:
 	/*---- 输入数据 ----*/
@@ -38,9 +39,9 @@ private:
 
 template<typename T1, typename T2>
 Network::Network(
-	Matrix<T1>& input,
-	Matrix<T2>& exp_output,
-	Vector<int>& node_config,
+	const Matrix<T1>& input,
+	const Matrix<T2>& exp_output,
+	const Vector<int>& node_config,
 	double error_limit,
 	float alpha) :_error_limit(error_limit), _alpha(alpha)
 {
@@ -88,4 +89,9 @@ Network::Network(
 	_deltaweight = new Matrix<double>[_layers - 1];
 	for (int i = 0; i < _layers - 1; i++)
 		_deltaweight[i].ReSize((*_node_config)[i + 1], (*_node_config)[i] + 1);
+}
+
+template<typename T1, typename T2>
+void Network::Test(const Matrix<T1>& test_input, const Matrix<T2>& exp_output)
+{
 }

@@ -21,20 +21,21 @@ Network::~Network()
 void Network::Train()
 {
 	cout << "开始训练" << endl;
-	double avr_e = 0.0;//全部输入数据的平均误差
+	double avr_e = 0.0,e=0.0;//全部输入数据的平均误差
 	//对于每一组输入数据，进行前向计算，返回原始误差。
 	for (int count = 0;; count++)
 	{
 		avr_e = 0.0;
-		cout << count << "\t";
+		cout << "*******************第" << count << "次循环*******************"<< endl;
 		for (int i = 0; i < _input->GetSize()[0]; i++)
 		{
-			double e = ForwardCalc(i);
+			e = ForwardCalc(i);
 			avr_e += e;
 			BackPpg();
+			if (!(i % 100))cout << "第" << i << "个数据" << "\t" << e << "\n";
 		}
 		avr_e /= _input->GetSize()[0];
-		cout << "error=" << avr_e << endl;
+		cout << "error=" << avr_e <<endl;
 		if (abs(avr_e) < _error_limit) {
 			ShowResult();
 			break;
