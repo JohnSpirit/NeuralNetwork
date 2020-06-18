@@ -28,13 +28,13 @@ public:
 	Matrix(int m, int n);
 	virtual ~Matrix();
 
-	void SetValueByArray(T* arrptr = nullptr, int RowOrCol = COL, int toset = 0);
+	Matrix<T>& SetValueByArray(T* arrptr = nullptr, int RowOrCol = COL, int toset = 0);
 
 	void ReSize(int m, int n);
 	Vector<int> GetSize()const;
 	Matrix<T> Inv()const;
 	Matrix<T> Transpose()const;
-	Matrix<T>& Transpose();
+	//Matrix<T>& Transpose();
 	virtual Matrix<T>& Concat(const Matrix<T> mat, int dir = RIGHT, bool inplace = true)final;//不能被重写
 	Matrix<T> Concat(const Matrix<T> mat, int dir = RIGHT)const;
 	Matrix<T> Slice(int m1 = ALL, int n1 = ALL, int m2 = ALL, int n2 = ALL)const;
@@ -94,10 +94,10 @@ Matrix<T>::Matrix(const Matrix<T>& mat)
 	this->_n = mat._n;
 	this->_matptr = new T*[mat._m];
 
-	for (int i = 0; i < mat._m; i++)
+	for (int i = 0; i < this->_m; i++)
 	{
-		this->_matptr[i] = new T[_n];
-		for (int j = 0; j < mat._n; j++)this->_matptr[i][j] = mat._matptr[i][j];
+		this->_matptr[i] = new T[this->_n];
+		for (int j = 0; j < this->_n; j++)this->_matptr[i][j] = mat._matptr[i][j];
 	}
 }
 
@@ -115,53 +115,54 @@ Matrix<T>::Matrix(int m, int n) :_m(m), _n(n)
 template<typename T>
 Matrix<T>::~Matrix()
 {
-	for (int i = 0; i < _m; i++) { delete[] this->_matptr[i]; }
+	for (int i = 0; i < this->_m; i++) { delete[] this->_matptr[i]; }
 	delete[] this->_matptr;
 }
 
 template<typename T>
-void Matrix<T>::SetValueByArray(T * arrptr, int RowOrCol, int toset)
+Matrix<T>& Matrix<T>::SetValueByArray(T * arrptr, int RowOrCol, int toset)
 {
-	if (arrptr == nullptr)return;
+	if (arrptr == nullptr)return *this;
 	if (RowOrCol == ROW)
 	{
-		if (toset >= _m)
+		if (toset >= this->_m)
 		{
 			cerr << "OutOfRangeError!" << endl;
 			exit(EXIT_FAILURE);
 		}
-		for (int i = 0; i < _m; i++)this->_matptr[toset][i] = arrptr[i];
+		for (int i = 0; i < this->_m; i++)this->_matptr[toset][i] = arrptr[i];
 	}
 	else if (RowOrCol == COL)
 	{
-		if (toset >= _n)
+		if (toset >= this->_n)
 		{
 			cerr << "OutOfRangeError!" << endl;
 			exit(EXIT_FAILURE);
 		}
-		for (int i = 0; i < _m; i++)this->_matptr[i][toset] = arrptr[i];
+		for (int i = 0; i < this->_m; i++)this->_matptr[i][toset] = arrptr[i];
 	}
 	else if (RowOrCol == ALL)
 	{
-		for (int i = 0; i < _m; i++)
-			for (int j = 0; j < _n; j++)
-				this->_matptr[i][j] = arrptr[_m*i + j];
+		for (int i = 0; i < this->_m; i++)
+			for (int j = 0; j < this->_n; j++)
+				this->_matptr[i][j] = arrptr[this->_n*i + j];
 	}
+	return *this;
 }
 
 template<typename T>
 void Matrix<T>::ReSize(int new_m, int new_n)
 {
-	if (_m == this->_m&&_n == this->_n)return;
+	if (new_m == this->_m&&new_n == this->_n)return;
 	for (int i = 0; i < this->_m; i++)delete[] this->_matptr[i];
 	delete[] this->_matptr;
 	this->_m = new_m;
 	this->_n = new_n;
-	this->_matptr = new T*[new_m];
-	for (int i = 0; i < new_m; i++)
+	this->_matptr = new T*[this->_m];
+	for (int i = 0; i < this->_m; i++)
 	{
-		this->_matptr[i] = new T[new_n];
-		for (int j = 0; j < new_n; j++)this->_matptr[i][j] = 0;
+		this->_matptr[i] = new T[this->_n];
+		for (int j = 0; j < this->_n; j++)this->_matptr[i][j] = 0;
 	}
 }
 
@@ -183,32 +184,32 @@ Matrix<T> Matrix<T>::Inv() const
 template<typename T>
 Matrix<T> Matrix<T>::Transpose() const
 {
-	Matrix<T> mat(_n, _m);
-	if (_n == 0)return mat;
-	for (int i = 0; i < _m; i++)
-		for (int j = 0; j < _m; j++)
+	Matrix<T> mat(this->_n, this->_m);
+	if (this->_n == 0)return mat;
+	for (int i = 0; i < this->_m; i++)
+		for (int j = 0; j < this->_n; j++)
 			mat._matptr[j][i] = this->_matptr[i][j];
 	return mat;
 }
 
-template<typename T>
-Matrix<T>& Matrix<T>::Transpose()
-{
-	Matrix<T> mat(*this);
-	if (_m == _n)
-		for (int i = 0; i < _m; i++)
-			for (int j = 0; j < _n; j++)
-				mat._matptr[j][i] = this->_matptr[i][j];
-	else
-	{
-		//重新分配内存
-		this->ReSize(this->_n, this->_m);
-		for (int i = 0; i < _n; i++)
-			for (int j = 0; j < _m; j++)
-				this->_matptr[i][j] = mat._matptr[j][i];
-	}
-	return *this;
-}
+//template<typename T>
+//Matrix<T>& Matrix<T>::Transpose(bool inplace)
+//{
+//	Matrix<T> mat(*this);
+//	if (_m == _n)
+//		for (int i = 0; i < _m; i++)
+//			for (int j = 0; j < _n; j++)
+//				this->_matptr[i][j] = mat._matptr[j][i];
+//	else
+//	{
+//		//重新分配内存
+//		this->ReSize(this->_n, this->_m);
+//		for (int i = 0; i < _n; i++)
+//			for (int j = 0; j < _m; j++)
+//				this->_matptr[i][j] = mat._matptr[j][i];
+//	}
+//	return *this;
+//}
 
 template<typename T>
 Matrix<T>& Matrix<T>::Concat(const Matrix<T> mat, int dir, bool inplace)
@@ -304,8 +305,8 @@ template<typename T>
 Matrix<T> Matrix<T>::Sigmoid()
 {
 	Matrix<T> mat(this->_m, this->_n);
-	for (int i = 0; i < _m; i++)
-		for (int j = 0; j < _n; j++)
+	for (int i = 0; i < this->_m; i++)
+		for (int j = 0; j < this->_n; j++)
 			mat._matptr[i][j] = 1 / (1 - exp(-this->_matptr[i][j]));
 	return mat;
 }
@@ -314,8 +315,8 @@ template<typename T>
 Matrix<T> Matrix<T>::SigmoidDerive()
 {
 	Matrix<T> mat(this->_m, this->_n);
-	for (int i = 0; i < _m; i++)
-		for (int j = 0; j < _n; j++)
+	for (int i = 0; i < this->_m; i++)
+		for (int j = 0; j < this->_n; j++)
 			mat._matptr[i][j] = -exp(-this->_matptr[i][j]) / pow(1 - exp(-this->_matptr[i][j]), 2);
 	return mat;
 }
@@ -323,8 +324,8 @@ Matrix<T> Matrix<T>::SigmoidDerive()
 template<typename T>
 Matrix<T>& Matrix<T>::Multi(double value)
 {
-	for (int i = 0; i < _m; i++)
-		for (int j = 0; j < _n; j++)
+	for (int i = 0; i < this->_m; i++)
+		for (int j = 0; j < this->_n; j++)
 			this->_matptr[i][j] *= value;
 	return *this;
 }
@@ -338,17 +339,17 @@ Matrix<T>& Matrix<T>::operator=(const Matrix<T>& mat)
 		delete[] this->_matptr;
 		this->_m = mat._m;
 		this->_n = mat._n;
-		this->_matptr = new T*[mat._m];
-		for (int i = 0; i < mat._m; i++)
+		this->_matptr = new T*[this->_m];
+		for (int i = 0; i < this->_m; i++)
 		{
-			this->_matptr[i] = new T[_n];
-			for (int j = 0; j < mat._n; j++)this->_matptr[i][j] = mat._matptr[i][j];
+			this->_matptr[i] = new T[this->_n];
+			for (int j = 0; j < this->_n; j++)this->_matptr[i][j] = mat._matptr[i][j];
 		}
 	}
 	else
 	{
-		for (int i = 0; i < mat._m; i++)
-			for (int j = 0; j < mat._n; j++)this->_matptr[i][j] = mat._matptr[i][j];
+		for (int i = 0; i < this->_m; i++)
+			for (int j = 0; j < this->_n; j++)this->_matptr[i][j] = mat._matptr[i][j];
 	}
 
 	return *this;
@@ -402,7 +403,7 @@ Matrix<T> Matrix<T>::operator+(const Matrix<T> mat) const
 
 	Matrix<T> ret(_m, _n);
 	for (int i = 0; i < this->_m; i++)
-		for (int j = 0; j < mat._n; j++)
+		for (int j = 0; j < this->_n; j++)
 			ret._matptr[i][j] = this->_matptr[i][j] + mat._matptr[i][j];
 
 	return ret;
@@ -413,7 +414,7 @@ Matrix<T> Matrix<T>::operator-() const
 {
 	Matrix<T> mat(_m, _n);
 	for (int i = 0; i < this->_m; i++)
-		for (int j = 0; j < mat._n; j++)
+		for (int j = 0; j < this->_n; j++)
 			mat._matptr[i][j] = -this->_matptr[i][j];
 	return mat;
 }
@@ -454,9 +455,9 @@ Matrix<T> Matrix<T>::operator*(const Matrix<T>& mat) const
 template<typename T>
 Matrix<T> Matrix<T>::operator*(double value) const
 {
-	Matrix<T> mat(this->_m, this->_n);
-	for (int i = 0; i < _m; i++)
-		for (int j = 0; j < _n; j++)
+	Matrix<T> mat(*this);
+	for (int i = 0; i < this->_m; i++)
+		for (int j = 0; j < this->_n; j++)
 			mat._matptr[i][j] *= value;
 	return mat;
 }

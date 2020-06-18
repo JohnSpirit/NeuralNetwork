@@ -17,11 +17,12 @@ public:
 	Vector<T> Sigmoid(bool ignore_end = true);
 	Vector<T> SigmoidDerive();
 	Vector<T> Transpose(bool append = true, T value = 1);
-
+	//Vector<T> Transpose()const;
 	T Sum();
 
 	Diag<T> ToDiag();
-	T operator[](int m);
+	T operator[](int m)const;
+	T& operator[](int m);//set value
 	Vector<T>& operator=(const Vector<T> v);
 };
 
@@ -68,7 +69,7 @@ Vector<T>::Vector(const Diag<T>& v)
 }
 
 template<typename T>
-Vector<T>::Vector(const Matrix<T>& v)
+Vector<T>::Vector(const Matrix<T>& v) : Matrix<T>(v)
 {
 }
 
@@ -86,7 +87,19 @@ Diag<T> Vector<T>::ToDiag()
 }
 
 template<typename T>
-T Vector<T>::operator[](int m)
+T Vector<T>::operator[](int m)const
+{
+	if (this->_m > 1 && m < this->_m)return this->_matptr[m][0];
+	else if (this->_n > 1 && m < this->_n)return this->_matptr[0][m];
+	else
+	{
+		cerr << "OutOfRangeError!!" << endl;
+		exit(EXIT_FAILURE);
+	}
+}
+
+template<typename T>
+T & Vector<T>::operator[](int m)
 {
 	if (this->_m > 1 && m < this->_m)return this->_matptr[m][0];
 	else if (this->_n > 1 && m < this->_n)return this->_matptr[0][m];
@@ -159,25 +172,34 @@ Vector<T> Vector<T>::Transpose(bool append, T value)
 	if (append)
 	{
 		this->ReSize(this->_n+1, this->_m);
-		for (int i = 0; i < this->_n; i++)
-			for (int j = 0; j < this->_m; j++)
-				this->_matptr[i][j] = v._matptr[j][i];
-		v._matptr[this->_n][0] = value;
+		for (int i = 0; i < v._m; i++)
+			for (int j = 0; j < v._n; j++)
+				this->_matptr[j][i] = v._matptr[i][j];
+		v._matptr[this->_n - 1][0] = value;
 		return v;
 	}
-	else if (this->_m == this->_n)return v;
 	else
 	{
 		this->ReSize(this->_n, this->_m);
-		for (int i = 0; i < this->_n; i++)
-			for (int j = 0; j < this->_m; j++)
-				this->_matptr[i][j] = v._matptr[j][i];
+		for (int i = 0; i < v._m; i++)
+			for (int j = 0; j < v._n; j++)
+				this->_matptr[j][i] = v._matptr[i][j];
 		return v;
 	}
 }
 
+//template<typename T>
+//Vector<T> Vector<T>::Transpose()const
+//{
+//	Vector<T> v(Matrix<T>::Transpose());
+//	return v;
+//}
+
 template<typename T>
 T Vector<T>::Sum()
 {
-	return T();
+	T sum = 0;
+	for (int i = 0; i < this->GetLength(); i++)
+		sum += this->operator[](i);
+	return sum;
 }

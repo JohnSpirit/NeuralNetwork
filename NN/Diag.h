@@ -35,12 +35,12 @@ Diag<T>::Diag(Vector<T>& v)
 	this->ReSize(v.GetLength(), v.GetLength());
 	for (int i = 0; i < this->_m; i++)
 	{
-		this->_matptr[i][i] = v.operator[](i);
+		this->_matptr[i][i] = v[i];
 	}
 }
 
 template<typename T>
-Diag<T>::Diag(Matrix<T>& mat)
+Diag<T>::Diag(Matrix<T>& mat):Matrix<T>(mat)
 {
 
 }
