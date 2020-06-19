@@ -18,6 +18,22 @@ Network::~Network()
 	delete[] _deltaweight;
 }
 
+void Network::ReadWeightFromFile(const char * filename)
+{
+	fstream weight_is(filename, ios::in | ios::binary);
+	for (int i = 0; i < _layers - 1; i++)
+		_weight[i].ReadFromFile(weight_is, false);
+	weight_is.close();
+}
+
+void Network::SaveWeightToFile(const char * filename)
+{
+	fstream weight_os(filename, ios::out | ios::binary | ios::trunc);
+	for (int i = 0; i < _layers - 1; i++)
+		_weight[i].SaveToFile(weight_os, false);
+	weight_os.close();
+}
+
 void Network::Train()
 {
 	cout << "¿ªÊ¼ÑµÁ·" << endl;
@@ -36,6 +52,7 @@ void Network::Train()
 		}
 		avr_e /= _input->GetSize()[0];
 		cout << "error=" << avr_e <<endl;
+		SaveWeightToFile("D:\\program files\\C++\\NN\\minist\\weight.dat");
 		if (abs(avr_e) < _error_limit) {
 			ShowResult();
 			break;
@@ -87,7 +104,7 @@ void Network::BackPpg()
 	}
 }
 
-void Network::ShowResult()
+void Network::ShowResult(bool predict)
 {
 	double avr_e = 0.0;
 	for (int i = 0; i < _input->GetSize()[0]; i++)

@@ -11,10 +11,13 @@ public:
 	Network(const Matrix<T1>& input, const Matrix<T2>& exp_output,const Vector<int>& node_config, double error_limit, float alpha);
 	~Network();
 
+	void ReadWeightFromFile(const char* filename);//从文件读取权重信息
+	void SaveWeightToFile(const char* filename);//保存权重信息至文件
+
 	void Train();//训练
 	double ForwardCalc(int group_num);//前向计算
 	void BackPpg();//反向传播
-	void ShowResult();//显示运行结果
+	void ShowResult(bool predict=true);//显示运行结果
 	template<typename T1, typename T2>
 	void Test(const Matrix<T1>& test_input, const Matrix<T2>& exp_output);//测试
 

@@ -19,6 +19,8 @@ public:
 	Vector<T> Transpose(bool append = false, T value = 1);
 	Vector<T> Append(T value = 1);
 	T Sum();
+	T Max();
+	int Argmax();
 
 	Diag<T> ToDiag();
 	T operator[](int m)const;

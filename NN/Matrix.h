@@ -1,6 +1,7 @@
 #pragma once
 //2020.6 Copyright@JSY-2020.
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include <cstdlib>
 using namespace std;
@@ -30,7 +31,9 @@ public:
 	Matrix(const Matrix<T>& mat);
 	Matrix(int m, int n);
 	virtual ~Matrix();
-
+	
+	Matrix<T>& ReadFromFile(fstream& input,bool close=true);
+	void SaveToFile(fstream& output, bool close = true);
 	Matrix<T>& SetValueByArray(T* arrptr = nullptr, int RowOrCol = COL, int toset = 0);
 	Matrix<T>& Randomize();
 
@@ -121,6 +124,23 @@ Matrix<T>::~Matrix()
 {
 	for (int i = 0; i < this->_m; i++) { delete[] this->_matptr[i]; }
 	delete[] this->_matptr;
+}
+
+template<typename T>
+Matrix<T>& Matrix<T>::ReadFromFile(fstream & input, bool close)
+{
+	for (int i = 0; i < this->_m; i++)
+		input.read((char*)this->_matptr[i], this->_n * sizeof(T));
+	if (close)input.close();
+	return *this;
+}
+
+template<typename T>
+void Matrix<T>::SaveToFile(fstream & output, bool close)
+{
+	for (int i = 0; i < this->_m; i++)
+		output.write((char*)this->_matptr[i], this->_n * sizeof(T));
+	if (close)output.close();
 }
 
 template<typename T>

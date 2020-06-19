@@ -29,6 +29,7 @@ uint8_t* read_images(const char* filename)
 
 	uint8_t* data = new uint8_t[size * 28 * 28];
 	input.read((char*)data, size * 28 * 28);
+	input.close();
 
 	return data;
 }
@@ -43,6 +44,7 @@ uint8_t* read_labels(const char* filename)
 
 	uint8_t* data = new uint8_t[size];
 	input.read((char*)data, size);
+	input.close();
 
 	return data;
 }
@@ -118,9 +120,9 @@ int main(void)//≤‚ ‘ª˘¥°¿‡
 int main(void)
 {
 	int nodecfg[] = {
-		28 * 28,28 * 28,28 * 28,10
+		28 * 28,28 * 28,10
 	};
-	Vector<int> nodeconfig(nodecfg, 4, false, false);
+	Vector<int> nodeconfig(nodecfg, 3, false, false);
 
 	//----------------------------------train----------------------------------
 	uint8_t* inputdat = read_images("D:\\program files\\C++\\NN\\minist\\train-images.idx3-ubyte");
@@ -156,7 +158,12 @@ int main(void)
 	//----------------------------------run----------------------------------
 	srand((uint32_t)time(0) + clock());
 
-	Network n(inputmat.TypeCast<double>().operator*(0.00390625), outputmat.TypeCast<double>(), nodeconfig, 0.0001, 0.1f);
+	Network n(
+		inputmat.TypeCast<double>().operator*(0.00390625),
+		outputmat,
+		nodeconfig,
+		0.0001,
+		0.1f);
 	n.Train();
 
 	system("pause");
