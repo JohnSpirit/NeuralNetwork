@@ -100,7 +100,7 @@ T Vector<T>::operator[](int m)const
 }
 
 template<typename T>
-T & Vector<T>::operator[](int m)
+inline T & Vector<T>::operator[](int m)
 {
 	if (this->_m > 1 && m < this->_m)return this->_matptr[m][0];
 	else if (this->_n > 1 && m < this->_n)return this->_matptr[0][m];
@@ -213,4 +213,27 @@ T Vector<T>::Sum()
 	for (int i = 0; i < this->GetLength(); i++)
 		sum += this->operator[](i);
 	return sum;
+}
+
+template<typename T>
+T Vector<T>::Max()
+{
+	T max = this->operator[](0);
+	for (int i = 1; i < this->GetLength(); i++)
+		if (this->operator[](i) > max)max = this->operator[](i);
+	return max;
+}
+
+template<typename T>
+int Vector<T>::Argmax()
+{
+	T max = this->operator[](0);
+	int index = 0;
+	for (int i = 1; i < this->GetLength(); i++)
+		if (this->operator[](i) > max)
+		{
+			max = this->operator[](i);
+			index = i;
+		}
+	return index;
 }

@@ -19,7 +19,7 @@ public:
 	void BackPpg();//反向传播
 	void ShowResult(bool predict=true);//显示运行结果
 	template<typename T1, typename T2>
-	void Test(const Matrix<T1>& test_input, const Matrix<T2>& exp_output);//测试
+	void Test(const Matrix<T1>& test_input, const Matrix<T2>& test_exp_output);//测试
 
 private:
 	/*---- 输入数据 ----*/
@@ -27,8 +27,8 @@ private:
 	float _alpha = 0.1f;//学习率
 	int _layers = 0;
 	Vector<int>* _node_config = nullptr;
-	Matrix<double>* _input = nullptr;//输入数据集
-	Matrix<double>* _exp_output = nullptr;//教师数据集
+	Matrix<double>* _input = nullptr;//训练数据集
+	Matrix<double>* _exp_output = nullptr;//训练教师数据集
 
 	/*---- 自动生成数据 ----*/
 	Vector<double>* _input_vector = nullptr;//各层输入列向量
@@ -95,6 +95,40 @@ Network::Network(
 }
 
 template<typename T1, typename T2>
-void Network::Test(const Matrix<T1>& test_input, const Matrix<T2>& exp_output)
+void Network::Test(const Matrix<T1>& test_input, const Matrix<T2>& test_exp_output)
 {
+	//类型转换
+	Matrix<double> test_input_mat = test_input.TypeCast<double>();
+	Matrix<double> test_output_mat = test_exp_output.TypeCast<double>();
+	//保存原来训练数据，并将指针替换为测试数据集
+	Matrix<double>* save_train_input = this->_input;
+	Matrix<double>* save_train_output = this->_exp_output;
+	_input = &test_input_mat;
+	_exp_output = &test_output_mat;
+
+	cout << "开始测试" << endl;
+	double avr_e = 0.0, e = 0.0;
+	int predict_num = -1, exp_num = -1, same_counter = 0;
+	for (int i = 0; i < _input->GetSize()[0]; i++)
+	{
+		e = ForwardCalc(i);
+		avr_e += e;
+		//输出预测值和期望值
+		predict_num = Vector<double>(
+			_output_vector[_layers - 1].
+			Slice(0, 0, _output_vector[_layers - 1].
+				GetLength() - 2, 0)
+			).Argmax();
+		exp_num = (*_exp_output)[i].Argmax();
+		cout << i << "\tpredict: " << predict_num
+			<< "\texpect: " << exp_num << endl;
+		if (exp_num == predict_num)same_counter++;
+	}
+	avr_e /= _input->GetSize()[0];
+	cout.precision(7);
+	cout << "error=" << avr_e << endl;
+	cout.precision(4);
+	cout << "accuracy=" << double(same_counter) / _input->GetSize()[0] * 100 << "%" << endl;
+	_input = save_train_input;
+	_exp_output = save_train_output;
 }

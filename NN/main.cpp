@@ -162,8 +162,11 @@ int main(void)
 		inputmat.TypeCast<double>().operator*(0.00390625),
 		outputmat,
 		nodeconfig,
-		0.0001,
+		0.00001,
 		0.1f);
+
+	n.ReadWeightFromFile("D:\\program files\\C++\\NN\\minist\\weight.dat");
+	//n.Test(test_inputmat.TypeCast<double>().operator*(0.00390625), test_outputmat);
 	n.Train();
 
 	system("pause");
