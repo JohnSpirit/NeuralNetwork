@@ -122,8 +122,10 @@ int main(void)
 		28 * 28,28 * 28,10
 	};
 	Vector<int> nodeconfig(nodecfg, 3, false, false);
-	//D:\\program files\\C++\\NN\\
+	
 	//----------------------------------train----------------------------------
+	///D:\\program files\\C++\\NN\\
+	
 	uint8_t* inputdat = read_images("minist\\train-images.idx3-ubyte");
 	uint8_t* labels = read_labels("minist\\train-labels.idx1-ubyte");
 	uint8_t* outputdat = new uint8_t[60000 * 10];
