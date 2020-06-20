@@ -137,7 +137,7 @@ void Network::TestImage()
 		input.close();
 
 		imagemat = imagemat.SetValueByArray(imagedat, ALL);
-		imagematd = imagemat.TypeCast<double>();
+		imagematd = imagemat.TypeCast<double>()*0.00390625;
 
 		this->_input = &imagematd;
 		//首先将该组输入数据赋值给第一层输入列向量。
