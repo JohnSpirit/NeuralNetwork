@@ -1,3 +1,4 @@
+#include <Windows.h>
 #include "Network.h"
 
 Network::Network()
@@ -37,12 +38,12 @@ void Network::SaveWeightToFile(const char * filename)
 void Network::Train()
 {
 	cout << "开始训练" << endl;
-	double avr_e = 0.0,e=0.0;//全部输入数据的平均误差
+	double avr_e = 0.0, e = 0.0;//全部输入数据的平均误差
 	//对于每一组输入数据，进行前向计算，返回原始误差。
 	for (int count = 0;; count++)
 	{
 		avr_e = 0.0;
-		cout << "*******************第" << count << "次循环*******************"<< endl;
+		cout << "*******************第" << count << "次循环*******************" << endl;
 		for (int i = 0; i < _input->GetSize()[0]; i++)
 		{
 			e = ForwardCalc(i);
@@ -51,7 +52,7 @@ void Network::Train()
 			if (!(i % 100))cout << "第" << i << "个数据" << "\t" << e << "\n";
 		}
 		avr_e /= _input->GetSize()[0];
-		cout << "error=" << avr_e <<endl;
+		cout << "error=" << avr_e << endl;
 		SaveWeightToFile("D:\\program files\\C++\\NN\\minist\\weight.dat");
 		if (abs(avr_e) < _error_limit) {
 			ShowResult();
@@ -63,7 +64,7 @@ void Network::Train()
 double Network::ForwardCalc(int group_num)
 {
 	//首先将该组输入数据赋值给第一层输入列向量。
-	_output_vector[0] = (*_input)[group_num].Transpose(true,1);//输出向量要在末尾append=1
+	_output_vector[0] = (*_input)[group_num].Transpose(true, 1);//输出向量要在末尾append=1
 	for (int layer = 0; layer < _layers - 1; layer++)
 	{
 		_input_vector[layer] = _weight[layer] * _output_vector[layer];
@@ -75,7 +76,7 @@ double Network::ForwardCalc(int group_num)
 	//计算最后一层的delta值
 	_delta[_layers - 2] = _input_vector[_layers - 2].SigmoidDerive().ToDiag()*
 		error;
-	
+
 	return Vector<double>(error.Multi(error)*0.5).Sum();
 }
 
@@ -109,12 +110,50 @@ void Network::ShowResult(bool predict)
 	double avr_e = 0.0;
 	for (int i = 0; i < _input->GetSize()[0]; i++)
 	{
-		double e= ForwardCalc(i);
+		double e = ForwardCalc(i);
 		cout << "本输入对应平方和误差=" << e << endl;
 		avr_e += e;
 		cout << "输入\n" << (*_input)[i] << endl;
 		cout << "期望输出\n" << (*_exp_output)[i] << endl;
-		cout << "实际输出\n" << _output_vector[_layers - 1].Slice(0, 0, _output_vector[_layers - 1].GetLength() - 2, 0).Transpose()<<endl;
+		cout << "实际输出\n" << _output_vector[_layers - 1].Slice(0, 0, _output_vector[_layers - 1].GetLength() - 2, 0).Transpose() << endl;
 	}
-	cout << "平均平方和误差=" << avr_e / _input->GetSize()[0]<<endl;
+	cout << "平均平方和误差=" << avr_e / _input->GetSize()[0] << endl;
+}
+
+void Network::TestImage()
+{
+	uint8_t* imagedat = new uint8_t[28 * 28];
+	Matrix<uint8_t> imagemat(1, 28 * 28);
+	Matrix<double> imagematd(1, 28 * 28);
+	double e = 0.0;
+	int predict_num = -1;
+	system("cls");
+	for (int count = 0;; count++)
+	{
+		system("python \"minist\\convert.py\"");
+		fstream input("minist\\test_image", ios::in | ios::binary);
+		input.seekg(16, ios::cur);
+		input.read((char*)imagedat, 28 * 28);
+		input.close();
+
+		imagemat = imagemat.SetValueByArray(imagedat, ALL);
+		imagematd = imagemat.TypeCast<double>();
+
+		this->_input = &imagematd;
+		//首先将该组输入数据赋值给第一层输入列向量。
+		_output_vector[0] = (*_input)[0].Transpose(true, 1);//输出向量要在末尾append=1
+		for (int layer = 0; layer < _layers - 1; layer++)
+		{
+			_input_vector[layer] = _weight[layer] * _output_vector[layer];
+			_output_vector[layer + 1] = _input_vector[layer].Sigmoid().Append();
+		}
+		predict_num = Vector<double>(
+			_output_vector[_layers - 1].
+			Slice(0, 0, _output_vector[_layers - 1].
+				GetLength() - 2, 0)
+			).Argmax();
+		cout << count << "\t" << predict_num << "\n";
+		Sleep(2000);
+	}
+	delete[] imagedat;
 }

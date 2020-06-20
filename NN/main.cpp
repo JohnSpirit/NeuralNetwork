@@ -49,7 +49,6 @@ uint8_t* read_labels(const char* filename)
 	return data;
 }
 
-
 #ifdef TEST
 int main(void)//²âÊÔ»ù´¡Àà
 {
@@ -123,10 +122,10 @@ int main(void)
 		28 * 28,28 * 28,10
 	};
 	Vector<int> nodeconfig(nodecfg, 3, false, false);
-
+	//D:\\program files\\C++\\NN\\
 	//----------------------------------train----------------------------------
-	uint8_t* inputdat = read_images("D:\\program files\\C++\\NN\\minist\\train-images.idx3-ubyte");
-	uint8_t* labels = read_labels("D:\\program files\\C++\\NN\\minist\\train-labels.idx1-ubyte");
+	uint8_t* inputdat = read_images("minist\\train-images.idx3-ubyte");
+	uint8_t* labels = read_labels("minist\\train-labels.idx1-ubyte");
 	uint8_t* outputdat = new uint8_t[60000 * 10];
 	memset(outputdat, 0, 60000 * 10);
 	for (int i = 0; i < 60000; i++)
@@ -141,8 +140,8 @@ int main(void)
 	delete[] labels;
 
 	//----------------------------------test----------------------------------
-	uint8_t* test_inputdat = read_images("D:\\program files\\C++\\NN\\minist\\t10k-images.idx3-ubyte");
-	uint8_t* test_labels = read_labels("D:\\program files\\C++\\NN\\minist\\t10k-labels.idx1-ubyte");
+	uint8_t* test_inputdat = read_images("minist\\t10k-images.idx3-ubyte");
+	uint8_t* test_labels = read_labels("minist\\t10k-labels.idx1-ubyte");
 	uint8_t* test_outputdat = new uint8_t[10000 * 10];
 	memset(test_outputdat, 0, 10000 * 10);
 	for (int i = 0; i < 10000; i++)
@@ -165,9 +164,10 @@ int main(void)
 		0.00001,
 		0.1f);
 
-	n.ReadWeightFromFile("D:\\program files\\C++\\NN\\minist\\weight.dat");
+	n.ReadWeightFromFile("minist\\weight.dat");
 	//n.Test(test_inputmat.TypeCast<double>().operator*(0.00390625), test_outputmat);
-	n.Train();
+	//n.Train();
+	n.TestImage();
 
 	system("pause");
 	return 0;

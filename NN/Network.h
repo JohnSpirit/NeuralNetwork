@@ -2,6 +2,7 @@
 #include "Matrix.h"
 #include "Vector.h"
 #include "Diag.h"
+uint8_t* read_images(const char* filename);
 class Network
 {
 public:
@@ -20,6 +21,7 @@ public:
 	void ShowResult(bool predict=true);//显示运行结果
 	template<typename T1, typename T2>
 	void Test(const Matrix<T1>& test_input, const Matrix<T2>& test_exp_output);//测试
+	void TestImage();//测试图片
 
 private:
 	/*---- 输入数据 ----*/
