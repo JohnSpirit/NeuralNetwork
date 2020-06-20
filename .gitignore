@@ -260,3 +260,5 @@ paket-files/
 __pycache__/
 *.pyc
 /七段数码管.docx
+/test
+/train
