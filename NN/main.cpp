@@ -168,8 +168,10 @@ int main(void)
 
 	n.ReadWeightFromFile("minist\\weight.dat");
 	//n.Test(test_inputmat.TypeCast<double>().operator*(0.00390625), test_outputmat);
+	n.Test(inputmat.TypeCast<double>().operator*(0.00390625), outputmat);
+
 	//n.Train();
-	n.TestImage();
+	//n.TestImage();
 
 	system("pause");
 	return 0;
